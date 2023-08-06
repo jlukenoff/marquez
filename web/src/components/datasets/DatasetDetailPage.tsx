@@ -3,7 +3,7 @@
 
 import * as Redux from 'redux'
 import { Box, Button, Chip, Tab, Tabs } from '@material-ui/core'
-import { DatasetVersion } from '../../types/api'
+import { DatasetVersion, LineageGraph } from '../../types/api'
 import { IState } from '../../store/reducers'
 import {
   Theme as ITheme,
@@ -35,6 +35,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MqStatus from '../core/status/MqStatus'
 import MqText from '../core/text/MqText'
 
+import NeighborsList from '../neighbors-list/NeighborsList'
 import React, { ChangeEvent, FunctionComponent, SetStateAction, useEffect } from 'react'
 
 const styles = ({ spacing }: ITheme) => {
@@ -71,6 +72,7 @@ interface StateProps {
   versionsLoading: boolean
   datasets: IState['datasets']
   display: IState['display']
+  lineageGraph: LineageGraph
 }
 
 interface DispatchProps {
@@ -178,6 +180,16 @@ const DatasetDetailPage: FunctionComponent<IProps> = props => {
                 {...a11yProps(1)}
                 disableRipple={true}
               />
+              <Tab
+                label={i18next.t('neighbors_tabs.upstream')}
+                {...a11yProps(1)}
+                disableRipple={true}
+              />
+              <Tab
+                label={i18next.t('neighbors_tabs.downstream')}
+                {...a11yProps(1)}
+                disableRipple={true}
+              />
             </Tabs>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
@@ -229,6 +241,8 @@ const DatasetDetailPage: FunctionComponent<IProps> = props => {
       )}
       {tab === 1 && <DatasetVersions versions={props.versions} />}
       {tab === 2 && <DatasetColumnLineage lineageDataset={props.lineageDataset} />}
+      {tab === 3 && <NeighborsList direction='upstream' />}
+      {tab === 4 && <NeighborsList direction='downstream' />}
     </Box>
   )
 }
@@ -237,7 +251,8 @@ const mapStateToProps = (state: IState) => ({
   datasets: state.datasets,
   display: state.display,
   versions: state.datasetVersions.result.versions,
-  versionsLoading: state.datasetVersions.isLoading
+  versionsLoading: state.datasetVersions.isLoading,
+  lineageGraph: state.lineage.lineage
 })
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch) =>

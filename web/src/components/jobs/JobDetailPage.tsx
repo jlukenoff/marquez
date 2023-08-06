@@ -34,6 +34,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MqEmpty from '../core/empty/MqEmpty'
 import MqStatus from '../core/status/MqStatus'
 import MqText from '../core/text/MqText'
+import NeighborsList from '../neighbors-list/NeighborsList'
 import RunInfo from './RunInfo'
 import Runs from './Runs'
 
@@ -128,6 +129,8 @@ const JobDetailPage: FunctionComponent<IProps> = props => {
         <Tabs value={tab} onChange={handleChange} textColor='primary' indicatorColor='primary'>
           <Tab label={i18next.t('jobs.latest_tab')} disableRipple={true} />
           <Tab label={i18next.t('jobs.history_tab')} disableRipple={true} />
+          <Tab label={i18next.t('neighbors_tabs.upstream')} disableRipple={true} />
+          <Tab label={i18next.t('neighbors_tabs.downstream')} disableRipple={true} />
         </Tabs>
         <Box display={'flex'} alignItems={'center'}>
           <Box mr={1}>
@@ -190,6 +193,8 @@ const JobDetailPage: FunctionComponent<IProps> = props => {
         )
       ) : null}
       {tab === 1 && <Runs runs={runs} />}
+      {tab === 2 && <NeighborsList direction='upstream' />}
+      {tab === 3 && <NeighborsList direction='downstream' />}
     </Box>
   )
 }

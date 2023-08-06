@@ -12,7 +12,7 @@ import { NodeText } from './NodeText'
 import { bindActionCreators } from 'redux'
 
 import { connect } from 'react-redux'
-import { encodeNode, isDataset, isJob } from '../../../../helpers/nodes'
+import { determineLink, isJob } from '../../../../helpers/nodes'
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase'
 import { setSelectedNode } from '../../../../store/actionCreators'
@@ -34,24 +34,14 @@ interface OwnProps {
 type NodeProps = DispatchProps & OwnProps
 
 class Node extends React.Component<NodeProps> {
-  determineLink = (node: GraphNode<MqNode>) => {
-    if (isJob(node)) {
-      return `/lineage/${encodeNode('JOB', node.data.namespace, node.data.name)}`
-    } else if (isDataset(node)) {
-      return `/lineage/${encodeNode('DATASET', node.data.namespace, node.data.name)}`
-    }
-    return '/'
-  }
-
   render() {
+    const i18next = require('i18next')
     const { node, selectedNode } = this.props
     const job = isJob(node)
     const isSelected = selectedNode === node.label
-    const ariaJobLabel = 'Job'
-    const ariaDatasetLabel = 'Dataset'
     return (
       <Link
-        to={this.determineLink(node)}
+        to={determineLink(node)}
         onClick={() => node.label && this.props.setSelectedNode(node.label)}
       >
         {job ? (
@@ -68,7 +58,7 @@ class Node extends React.Component<NodeProps> {
               cy={node.y}
             />
             <FontAwesomeIcon
-              title={ariaJobLabel}
+              title={i18next['jobs.label_singular']}
               aria-hidden={'true'}
               style={{ transformOrigin: `${node.x}px ${node.y}px` }}
               icon={faCog}
@@ -86,7 +76,7 @@ class Node extends React.Component<NodeProps> {
               x={node.x - RADIUS}
               y={node.y - RADIUS}
               fill={isSelected ? theme.palette.secondary.main : theme.palette.common.white}
-              stroke={isSelected ? theme.palette.primary.main: theme.palette.secondary.main}
+              stroke={isSelected ? theme.palette.primary.main : theme.palette.secondary.main}
               strokeWidth={BORDER / 2}
               width={RADIUS * 2}
               height={RADIUS * 2}
@@ -102,7 +92,7 @@ class Node extends React.Component<NodeProps> {
               rx={4}
             />
             <FontAwesomeIcon
-              title={ariaDatasetLabel}
+              title={i18next['datasets.label_singular']}
               aria-hidden={'true'}
               icon={faDatabase}
               width={ICON_SIZE}

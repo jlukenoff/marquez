@@ -6,7 +6,7 @@ import React from 'react'
 import '../../i18n/config'
 import * as Redux from 'redux'
 import { Box } from '@material-ui/core'
-import { DAGRE_CONFIG, INITIAL_TRANSFORM, NODE_SIZE } from './config'
+import { INITIAL_TRANSFORM } from './config'
 import { GraphEdge, Node as GraphNode, graphlib, layout } from 'dagre'
 import { HEADER_HEIGHT } from '../../helpers/theme'
 import { IState } from '../../store/reducers'
@@ -31,6 +31,7 @@ import MqEmpty from '../core/empty/MqEmpty'
 import MqText from '../core/text/MqText'
 import Node from './components/node/Node'
 import ParentSize from '@visx/responsive/lib/components/ParentSize'
+import { addNodesToGraph, createDagreGraph } from '../../helpers/graph'
 
 const BOTTOM_OFFSET = 8
 
@@ -115,7 +116,7 @@ export class Lineage extends React.Component<LineageProps, LineageState> {
         this.props.depth !== prevProps.depth) &&
       this.props.selectedNode
     ) {
-      this.initGraph()
+      g = createDagreGraph()
       this.buildGraphAll(this.props.lineage.graph)
     }
     if (
@@ -134,14 +135,6 @@ export class Lineage extends React.Component<LineageProps, LineageState> {
 
   componentWillUnmount() {
     this.props.resetLineage()
-  }
-
-  initGraph = () => {
-    g = new graphlib.Graph<MqNode>({ directed: true })
-    g.setGraph(DAGRE_CONFIG)
-    g.setDefaultEdgeLabel(() => {
-      return {}
-    })
   }
 
   getEdges = () => {
@@ -198,23 +191,9 @@ export class Lineage extends React.Component<LineageProps, LineageState> {
     return paths
   }
 
-  buildGraphAll = (graph: LineageNode[]) => {
-    // nodes
-    for (let i = 0; i < graph.length; i++) {
-      g.setNode(graph[i].id, {
-        label: graph[i].id,
-        data: graph[i].data,
-        width: NODE_SIZE,
-        height: NODE_SIZE
-      })
-    }
+  buildGraphAll = (nodes: LineageNode[]) => {
+    addNodesToGraph(g, nodes)
 
-    // edges
-    for (let i = 0; i < graph.length; i++) {
-      for (let j = 0; j < graph[i].inEdges.length; j++) {
-        g.setEdge(graph[i].inEdges[j].origin, graph[i].id)
-      }
-    }
     layout(g)
 
     this.setState({

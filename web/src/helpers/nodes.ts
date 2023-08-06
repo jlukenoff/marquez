@@ -1,8 +1,9 @@
 // Copyright 2018-2023 contributors to the Marquez project
 // SPDX-License-Identifier: Apache-2.0
 
-import { EventType, DataQualityFacets, Run, RunState } from '../types/api'
+import { DataQualityFacets, EventType, Run, RunState } from '../types/api'
 import { JobOrDataset, LineageDataset, LineageJob, MqNode } from '../components/lineage/types'
+import { Node } from 'dagre'
 import { Undefinable } from '../types/util/Nullable'
 import { theme } from './theme'
 
@@ -125,4 +126,13 @@ export function datasetFacetsStatus(facets: DataQualityFacets, limit = 14) {
   } else {
     return theme.palette.primary.main as string
   }
+}
+
+export const determineLink = (node: Node<MqNode>) => {
+  if (isJob(node)) {
+    return `/lineage/${encodeNode('JOB', node.data.namespace, node.data.name)}`
+  } else if (isDataset(node)) {
+    return `/lineage/${encodeNode('DATASET', node.data.namespace, node.data.name)}`
+  }
+  return '/'
 }

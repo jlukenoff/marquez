@@ -26,6 +26,7 @@ i18next
             docs_link: 'API Docs'
           },
           jobs: {
+            label_singular: 'Job',
             search: 'Search',
             latest_tab: 'LATEST RUN',
             history_tab: 'RUN HISTORY',
@@ -76,6 +77,7 @@ i18next
             duration: 'Duration'
           },
           datasets: {
+            label_singular: 'Dataset',
             latest_tab: 'LATEST SCHEMA',
             history_tab: 'VERSION HISTORY',
             column_lineage_tab: 'COLUMN LINEAGE',
@@ -125,6 +127,10 @@ i18next
             fields: 'FIELDS',
             created_by_run: 'CREATED BY RUN',
             lifecycle_state: 'LIFECYCLE STATE'
+          },
+          neighbors_tabs: {
+            upstream: 'UPSTREAMS',
+            downstream: 'DOWNSTREAMS'
           },
           events_route: {
             title: 'EVENTS',
